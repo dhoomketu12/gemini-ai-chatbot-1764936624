@@ -100,10 +100,15 @@ export function convertToUIMessages(
 
     if (typeof message.content === "string") {
       textContent = message.content;
+      // Unescape newlines and tabs that may have been double-escaped during JSON storage
+      textContent = textContent.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
     } else if (Array.isArray(message.content)) {
       for (const content of message.content) {
         if (content.type === "text") {
-          textContent += content.text;
+          let text = content.text;
+          // Unescape newlines and tabs that may have been double-escaped during JSON storage
+          text = text.replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+          textContent += text;
         } else if (content.type === "tool-call") {
           toolInvocations.push({
             state: "call",

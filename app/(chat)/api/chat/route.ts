@@ -53,6 +53,14 @@ export async function POST(request: Request) {
       `,
     messages: coreMessages,
     temperature: 0.9,
+    providerOptions: {
+      google: {
+        thinkingConfig: {
+          thinkingLevel: 'high',
+        },
+        structuredOutputs: false,  // Disable to prevent JSON escaping of newlines
+      },
+    },
     tools: {
       googleSearch: {
         description: "Search the web using Google to find current, accurate information about any topic. Use this when you need up-to-date information, facts about specific companies/products, or current events.",

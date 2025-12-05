@@ -25,11 +25,14 @@ export async function callGeminiWithSearch(query: string): Promise<string> {
         ],
         tools: [
           {
-            google_search: {},
+            googleSearch: {},
           },
         ],
         generationConfig: {
           temperature: 0.9,
+        },
+        thinkingConfig: {
+          thinkingLevel: "HIGH",
         },
       }),
     }
