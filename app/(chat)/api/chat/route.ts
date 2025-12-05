@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       `,
     messages: coreMessages,
     temperature: 0.9,
+    // @ts-ignore - providerOptions types not yet updated in this AI SDK version
     providerOptions: {
       google: {
         thinkingConfig: {
