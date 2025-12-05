@@ -2,21 +2,14 @@ import { convertToCoreMessages, Message, streamText } from "ai";
 import { z } from "zod";
 
 import { geminiProModel } from "@/ai";
-import {
-  generateReservationPrice,
-  generateSampleFlightSearchResults,
-  generateSampleFlightStatus,
-  generateSampleSeatSelection,
-} from "@/ai/actions";
+// Removed unused flight tool imports for better performance
 import { auth } from "@/app/(auth)/auth";
 import {
-  createReservation,
   deleteChatById,
   getChatById,
-  getReservationById,
   saveChat,
 } from "@/db/queries";
-import { generateUUID } from "@/lib/utils";
+// Removed unused generateUUID import
 
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
@@ -68,16 +61,15 @@ export async function POST(request: Request) {
       },
     },
     onFinish: async ({ responseMessages }) => {
+      // Save chat in background without blocking response
       if (session.user && session.user.id) {
-        try {
-          await saveChat({
-            id,
-            messages: [...coreMessages, ...responseMessages],
-            userId: session.user.id,
-          });
-        } catch (error) {
-          console.error("Failed to save chat");
-        }
+        saveChat({
+          id,
+          messages: [...coreMessages, ...responseMessages],
+          userId: session.user.id,
+        }).catch((error) => {
+          console.error("Failed to save chat:", error);
+        });
       }
     },
     experimental_telemetry: {
