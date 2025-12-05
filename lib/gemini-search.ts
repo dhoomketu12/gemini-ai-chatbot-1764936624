@@ -43,7 +43,11 @@ export async function callGeminiWithSearch(query: string): Promise<string> {
   const data = await response.json();
   
   // Extract the text from the response
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  
+  // Unescape newlines and other escape sequences that come as literal strings from the API
+  text = text.replace(/\\n/g, '\n');
+  text = text.replace(/\\t/g, '\t');
   
   return text;
 }
