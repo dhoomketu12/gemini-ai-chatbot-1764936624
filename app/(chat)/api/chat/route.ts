@@ -2,13 +2,13 @@ import { convertToCoreMessages, Message, streamText } from "ai";
 import { z } from "zod";
 
 import { geminiProModel } from "@/ai";
-// Removed unused flight tool imports for better performance
 import { auth } from "@/app/(auth)/auth";
 import {
   deleteChatById,
   getChatById,
   saveChat,
 } from "@/db/queries";
+import { callGeminiWithSearch } from "@/lib/gemini-search";
 // Removed unused generateUUID import
 
 export async function POST(request: Request) {
@@ -31,10 +31,11 @@ export async function POST(request: Request) {
       
       Your capabilities:
       - Provide thoughtful, detailed, and insightful responses on any topic
+      - Access to Google Search for current, accurate information
       - Help with analysis, research, and creative problem-solving
       - Assist with writing, coding, and innovative thinking
       - Explain complex concepts using analogies and examples
-      - Use available tools when helpful (like checking weather)
+      - Use available tools when helpful (like Google Search for facts, weather data, etc.)
       
       Your personality:
       - Be enthusiastic and engaging in your responses
@@ -53,6 +54,21 @@ export async function POST(request: Request) {
     messages: coreMessages,
     temperature: 0.9,
     tools: {
+      googleSearch: {
+        description: "Search the web using Google to find current, accurate information about any topic. Use this when you need up-to-date information, facts about specific companies/products, or current events.",
+        parameters: z.object({
+          query: z.string().describe("The search query to look up"),
+        }),
+        execute: async ({ query }) => {
+          try {
+            const result = await callGeminiWithSearch(query);
+            return result;
+          } catch (error) {
+            console.error('Google Search error:', error);
+            return "Sorry, I couldn't search for that information right now.";
+          }
+        },
+      },
       getWeather: {
         description: "Get the current weather at a location",
         parameters: z.object({

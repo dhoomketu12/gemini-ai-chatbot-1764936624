@@ -10,10 +10,17 @@ import { user, chat, User, reservation } from "./schema";
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
-let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
-let db = drizzle(client);
+// Initialize database connection only if POSTGRES_URL is available
+let client: ReturnType<typeof postgres> | null = null;
+let db: ReturnType<typeof drizzle> | null = null;
+
+if (process.env.POSTGRES_URL) {
+  client = postgres(`${process.env.POSTGRES_URL}?sslmode=require`);
+  db = drizzle(client);
+}
 
 export async function getUser(email: string): Promise<Array<User>> {
+  if (!db) throw new Error("Database not initialized");
   try {
     return await db.select().from(user).where(eq(user.email, email));
   } catch (error) {
@@ -23,6 +30,7 @@ export async function getUser(email: string): Promise<Array<User>> {
 }
 
 export async function createUser(email: string, password: string) {
+  if (!db) throw new Error("Database not initialized");
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
@@ -43,6 +51,7 @@ export async function saveChat({
   messages: any;
   userId: string;
 }) {
+  if (!db) throw new Error("Database not initialized");
   try {
     const selectedChats = await db.select().from(chat).where(eq(chat.id, id));
 
@@ -68,6 +77,7 @@ export async function saveChat({
 }
 
 export async function deleteChatById({ id }: { id: string }) {
+  if (!db) throw new Error("Database not initialized");
   try {
     return await db.delete(chat).where(eq(chat.id, id));
   } catch (error) {
@@ -77,6 +87,7 @@ export async function deleteChatById({ id }: { id: string }) {
 }
 
 export async function getChatsByUserId({ id }: { id: string }) {
+  if (!db) throw new Error("Database not initialized");
   try {
     return await db
       .select()
@@ -90,6 +101,7 @@ export async function getChatsByUserId({ id }: { id: string }) {
 }
 
 export async function getChatById({ id }: { id: string }) {
+  if (!db) throw new Error("Database not initialized");
   try {
     const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
     return selectedChat;
@@ -108,6 +120,7 @@ export async function createReservation({
   userId: string;
   details: any;
 }) {
+  if (!db) throw new Error("Database not initialized");
   return await db.insert(reservation).values({
     id,
     createdAt: new Date(),
@@ -118,6 +131,7 @@ export async function createReservation({
 }
 
 export async function getReservationById({ id }: { id: string }) {
+  if (!db) throw new Error("Database not initialized");
   const [selectedReservation] = await db
     .select()
     .from(reservation)
@@ -133,6 +147,7 @@ export async function updateReservation({
   id: string;
   hasCompletedPayment: boolean;
 }) {
+  if (!db) throw new Error("Database not initialized");
   return await db
     .update(reservation)
     .set({

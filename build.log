@@ -1,0 +1,37 @@
+  ▲ Next.js 15.0.0-canary.152
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/12) ...
+   Generating static pages (3/12) 
+   Generating static pages (6/12) 
+   Generating static pages (9/12) 
+ ✓ Generating static pages (12/12)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ƒ /                                    156 B           436 kB
+├ ƒ /_not-found                          903 B           103 kB
+├ ƒ /api/auth/[...nextauth]              0 B                0 B
+├ ƒ /api/chat                            0 B                0 B
+├ ƒ /api/files/upload                    0 B                0 B
+├ ƒ /api/history                         0 B                0 B
+├ ƒ /chat/[id]                           156 B           436 kB
+├ ƒ /login                               2.2 kB          159 kB
+├ ○ /opengraph-image-12cog0.png          0 B                0 B
+├ ƒ /register                            2.23 kB         159 kB
+└ ○ /twitter-image-12cog0.png            0 B                0 B
++ First Load JS shared by all            102 kB
+  ├ chunks/0d850a11-27c8796025ffe1ed.js  52.1 kB
+  ├ chunks/5058-967412c11dded439.js      42.7 kB
+  └ other shared chunks (total)          7.3 kB
+
+
+ƒ Middleware                             76.9 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
