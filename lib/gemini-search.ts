@@ -31,9 +31,6 @@ export async function callGeminiWithSearch(query: string): Promise<string> {
         generationConfig: {
           temperature: 0.9,
         },
-        thinkingConfig: {
-          thinkingLevel: "HIGH",
-        },
       }),
     }
   );
